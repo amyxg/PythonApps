@@ -1,0 +1,11 @@
+OwnerId,OwnerLastName,OwnerFirstName,OwnerPhone,OwnerEmail
+1001,Smith,John,555-1234,john.smith@example.com
+1010,Doe,Jane,555-5678,jane.doe@example.com
+1011,Johnson,Emily,555-8765,emily.johnson@example.com
+1015,Brown,Pat,555-1357,pat.brown@example.com
+1016,Martinez,Sarah,555-7890,sarah.martinez@example.com
+1017,Davis,Michael,555-9512,michael.davis@example.com
+1018,Miller,Linda,555-7531,linda.miller@example.com
+1020,Williams,Chris,555-4321,chris.williams@example.com
+1022,Jones,Kim,555-2468,kim.jones@example.com
+1023,Garcia,Carlos,555-3698,carlos.garcia@example.com

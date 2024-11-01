@@ -1,0 +1,11 @@
+PetId,PetName,PetType,PetBreed,PetDOB,Service,Date,Charge,OwnerId
+210,Buddy,Dog,Golden Retriever,2018-03-15,Vaccination,2023-06-01,50.0,1011
+211,Mittens,Cat,Siamese,2019-07-22,Grooming,2023-06-10,30.0,1011
+212,Rex,Dog,German Shepherd,2017-05-30,Checkup,2023-07-05,45.0,1020
+213,Coco,Dog,Poodle,2020-01-10,Vaccination,2023-07-20,50.0,1022
+214,Whiskers,Cat,Persian,2016-11-05,Grooming,2023-08-15,30.0,1016
+215,Bunny,Rabbit,Holland Lop,2022-02-18,Checkup,2023-09-01,45.0,1018
+216,Goldie,Fish,Goldfish,2023-01-01,Vaccination,2023-09-10,50.0,1010
+217,Shadow,Cat,Maine Coon,2021-08-14,Grooming,2023-10-01,30.0,1012
+218,Max,Dog,Bulldog,2019-12-11,Checkup,2023-10-05,45.0,1019
+219,Daisy,Dog,Beagle,2020-04-02,Vaccination,2023-10-10,50.0,1015
