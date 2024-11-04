@@ -64,7 +64,7 @@ def getOwner_PetData():
         con = sql.connect('vet_serv.db')
         cur = con.cursor()
         cur.execute(f'''
-                    SELECT OWNER.OwnerId, OWNER.OwnerFirstName, OWNER.OwnerLastName, OWNER.OwnerPhone, OWNER.OwnerEmail
+                    SELECT OWNER.OwnerId, OWNER.OwnerLastName, OWNER.OwnerFirstName, OWNER.OwnerPhone, OWNER.OwnerEmail,
                     PETS.PetId, PETS.PetName, PETS.PetBreed, PETS.PetDOB, PETS.OwnerId
                     FROM OWNER
                     JOIN PETS ON OWNER.OwnerId = PETS.OwnerId
@@ -73,7 +73,7 @@ def getOwner_PetData():
         #fetch all data from selected columns in db
         rows = cur.fetchall() 
         if rows:
-            csvColumns = ['OwnerId', 'OwnerFirstName', 'OwnerLastName', 'OwnerPhone', 'OwnerEmail', 
+            csvColumns = ['OwnerId', 'OwnerLastName', 'OwnerFirstName', 'OwnerPhone', 'OwnerEmail', 
                        'PetId', 'PetName', 'PetBreed', 'PetDOB']
             df = pd.DataFrame(rows, columns=csvColumns)
              # Get the last name for the filename
@@ -89,6 +89,43 @@ def getOwner_PetData():
         print("Operational error occurred.")
     finally:
         con.close()
+
+
+def calculateCharge():
+    userId_Input = None
+    # Loop until a valid integer is entered
+    while userId_Input is None:
+        try:
+            userId_Input = int(input("Please enter the OwnerId (e.g. 0000): "))
+        except ValueError:
+            print("ERROR! Invalid input. Please enter a valid integer.")
+    # get all fields from both tables for selected ownerId       
+    try:
+        con = sql.connect('vet_serv.db')
+        cur = con.cursor()
+        cur.execute(f'''
+                    SELECT OWNER.OwnerId, OWNER.OwnerLastName, OWNER.OwnerFirstName, OWNER.OwnerEmail,
+                    PETS.PetId, PETS.PetName, PETS.PetBreed, PETS.Service, PETS.Date, PETS.Charge
+                    FROM OWNER
+                    JOIN PETS ON OWNER.OwnerId = PETS.OwnerId
+                    WHERE OWNER.OwnerId = {userId_Input}
+        ''')
+        #fetch all data from selected columns in db
+        rows = cur.fetchall() 
+        if rows:
+            csvColumns = ['OwnerId', 'OwnerLastName', 'OwnerFirstName', 'OwnerEmail', 
+                       'PetId', 'PetName', 'PetBreed', 'PetDOB', 'Service', 'Date', 'Charge']
+            df = pd.DataFrame(rows, columns=csvColumns,)
+            print(df)
+        else:
+            print("No records found for the specified OwnerId.")
+    except sql.IntegrityError:
+        print("Error: Data could not be saved due to integrity constraints.")
+    except sql.OperationalError:
+        print("Operational error occurred.")
+    finally:
+        con.close()
+    
 
 def main():
     userChoice = 0
