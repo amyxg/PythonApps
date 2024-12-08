@@ -7,16 +7,17 @@
 </head>
 <body>
     <form action="/dateToLabel" method="post">
-        <p>Enter a date: <input type="text" name="userDate" placeholder="mm/dd/yyyy"/></p>
+        <label for="userDate">Enter a date:</label>
+        <input type="text" id="userDate" name="userDate" placeholder="mm/dd/yyyy"/>
         <button type="submit">Submit</button>
     </form>
     <!-- Checks if the var result exists and has a value, if yes then show results below-->
     {% if result %}
         <p>{{ result }}</p>
-        <p>Would you like to go again?</p>
-        <form action="" method="post">
-            <button type="submit">yes</button>
-            <button type="submit">stop</button>
+        <form action="/dateToLabel" method="POST">
+            <p>Would you like to go again?</p>
+            <button type="submit" name="choice" value="yes">yes</button>
+            <button type="submit" name="choice" value="stop">stop</button>
         </form>
     {% endif %}
 </body>
