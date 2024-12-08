@@ -8,7 +8,7 @@ Steps for terminal
 - pip install Flask
 - python dateConversion.py
 """
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template # type: ignore
 
 app = Flask(__name__)
 
@@ -60,11 +60,38 @@ def dateToLabel(indate):
 
 @app.route("/", methods=['GET'])
 def home():
+    """
+    Designated home page for users
+
+    Parameters
+    ----------
+    none
+
+    Returns
+    -------
+    html
+        renders homepage.html page for user
+    """
     return render_template('homepage.html')
 
 
 @app.route("/dateToLabel", methods=['POST'])
 def dateConverted():
+    """
+    Display results to users
+
+    Parameters
+    ----------
+    none
+
+    Returns
+    -------
+    html
+        renders homepage.html page for user
+    
+    results 
+        converted date or Error msg
+    """
     if 'choice' in request.form:
         if request.form['choice'] == 'stop':
             return "Goodbye.."
