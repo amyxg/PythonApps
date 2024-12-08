@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Date Conversion Tool</title>
+</head>
+<body>
+    <form action="/dateToLabel" method="post">
+        <p>Enter a date: <input type="text" name="userDate" placeholder="mm/dd/yyyy"/></p>
+        <button type="submit">Submit</button>
+    </form>
+    <!-- Checks if the var result exists and has a value, if yes then show results below-->
+    {% if result %}
+        <p>{{ result }}</p>
+        <p>Would you like to go again?</p>
+        <form action="" method="post">
+            <button type="submit">yes</button>
+            <button type="submit">stop</button>
+        </form>
+    {% endif %}
+</body>
+</html>
