@@ -9,12 +9,93 @@ Steps for terminal
 - python dateConversion.py
 """
 from flask import Flask, request, render_template # type: ignore
+from datetime import datetime
+import json
+import os
 
 app = Flask(__name__)
 
+# Constants for file paths
+LOG_FILE = "conversion_log.txt"
+STATS_FILE = "usage_stats.json"
+
+def init_stats():
+    """
+    Initialize usage statistics file if it doesn't exist.
+
+    Parameters
+    ----------
+    None
+
+    Returns
+    -------
+    dict
+        Dictionary containing initial or loaded statistics data.
+    """
+    if not os.path.exists(STATS_FILE):
+        stats = {"total_conversions": 0, "errors": 0, "last_used": None}
+        save_stats(stats)
+    return load_stats()
+
+def load_stats():
+    """
+    Load usage statistics from JSON file.
+
+    Parameters
+    ----------
+    None
+
+    Returns
+    -------
+    dict
+        Dictionary containing usage statistics data.
+    """
+    try:
+        with open(STATS_FILE, 'r') as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return {"total_conversions": 0, "errors": 0, "last_used": None}
+
+def save_stats(stats):
+    """
+    Save usage statistics to JSON file.
+
+    Parameters
+    ----------
+    stats : dict
+        Dictionary containing statistics to be saved.
+
+    Returns
+    -------
+    None
+    """
+    with open(STATS_FILE, 'w') as f:
+        json.dump(stats, f, indent=4)
+
+def log_conversion(input_date, result):
+    """
+    Log conversion attempt with timestamp to file.
+
+    Parameters
+    ----------
+    input_date : str
+        Original date string provided by user.
+    result : str
+        Converted date string or error message.
+
+    Returns
+    -------
+    None
+    """
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    log_entry = f"[{timestamp}] Input: {input_date} -> Output: {result}\n"
+    
+    with open(LOG_FILE, 'a') as f:
+        f.write(log_entry)
+
 def dateToLabel(indate):
     """
-    Exception handeling and converting date to Month dd, yyyy format
+    Exception handling and converting date to Month dd, yyyy format
 
     Parameters
     ----------
@@ -35,7 +116,7 @@ def dateToLabel(indate):
         return "Error: Incorrect format for date. Must be in mm/dd/yyyy format"
     
     month, day, year = fields
-    # check if vars are numeric, display error message if not an interger
+    # check if vars are numeric, display error message if not an integer
     if not (month.isdigit() and day.isdigit() and year.isdigit()):
         return "Error: month (mm), day (dd), and year (yyyy) must be numbers"
     
@@ -63,49 +144,50 @@ def home():
     """
     Designated home page for users
 
-    Parameters
-    ----------
-    none
-
     Returns
     -------
     html
-        renders homepage.html page for user
+        renders homepage.html page for user with usage statistics
     """
-    return render_template('homepage.html')
-
+    stats = load_stats()
+    return render_template('homepage.html', stats=stats)
 
 @app.route("/dateToLabel", methods=['POST'])
 def dateConverted():
     """
-    Display results to users
-
-    Parameters
-    ----------
-    none
+    Display results to users and log the conversion
 
     Returns
     -------
     html
-        renders homepage.html page for user
-    
-    results 
-        converted date or Error msg
+        renders appropriate page based on user choice
     """
     if 'choice' in request.form:
         if request.form['choice'] == 'stop':
-            return "Goodbye.."
+            return render_template('goodbye.html')
         # if yes, render the form again
-        return render_template('homepage.html')
+        stats = load_stats()
+        return render_template('homepage.html', stats=stats)
     
     dateString = request.form['userDate']
     convertedDate = dateToLabel(dateString)
     
-    if convertedDate.startswith("Error"):
-        return render_template('homepage.html', result=convertedDate)
-    else:
-        return render_template('homepage.html', result=f"{dateString} converted to Month dd, yyyy is {convertedDate}")
-
+    # Update statistics
+    stats = load_stats()
+    stats["last_used"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
+    if convertedDate.startswith("Error"):
+        stats["errors"] += 1
+        log_conversion(dateString, convertedDate)
+        save_stats(stats)
+        return render_template('homepage.html', result=convertedDate, stats=stats)
+    else:
+        stats["total_conversions"] += 1
+        result = f"{dateString} converted to Month dd, yyyy is {convertedDate}"
+        log_conversion(dateString, convertedDate)
+        save_stats(stats)
+        return render_template('homepage.html', result=result, stats=stats)
+
 if __name__ == "__main__":
+    init_stats()
     app.run(debug=True)
