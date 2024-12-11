@@ -5,15 +5,19 @@ Translate a date from mm/dd/yyyy to Month dd, yyyy format using flask
 Steps for terminal
 - python -m venv env (create virtual env, only IF there is no virtual env)
 - source env/bin/activate (activate virtual env, should show (env)@amyxg ) 
-- pip install Flask
+- pip install Flask pywebview pyinstaller auto-py-to-exe 
+- auto-py-to-exe 
 - python dateConversion.py
 """
 from flask import Flask, request, render_template # type: ignore
 from datetime import datetime
 import json
 import os
+import webview
 
 app = Flask(__name__)
+
+webview.create_window("User Date", app)
 
 # Constants for file paths
 LOG_FILE = "conversion_log.txt"
@@ -190,4 +194,5 @@ def dateConverted():
 
 if __name__ == "__main__":
     init_stats()
-    app.run(debug=True)
+    #app.run(debug=True)
+    webview.start()
